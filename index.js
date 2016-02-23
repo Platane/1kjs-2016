@@ -5,13 +5,13 @@ var rand = function(){ return 0|( Math.random()*500 ) }
 // init entities
 entities = []
 for( var i=100;i--;)
-    entities[i]={x:rand(), y:rand(), target:rand()%4, vx:0, vy:0}
+    entities[i]={x:rand(), y:rand(), target:rand()%4, vx:0, vy:0, color:rand()%2}
 
 var honeyPot = [
+    {x:100, y:100},
     {x:rand(), y:rand()},
     {x:rand(), y:rand()},
-    {x:rand(), y:rand()},
-    {x:rand(), y:rand()},
+    {x:412, y:153},
 ]
 
 // loop
@@ -33,8 +33,11 @@ var loop = function(){
 
                 var d = Math.max( 1, OUx*OUx + OUy*OUy )
 
-                ax += 2*OUx/(d*Math.sqrt(d))
-                ay += 2*OUy/(d*Math.sqrt(d))
+                var k = entities[j].color == entities[i].color ? 0.2 : 2
+
+                ax += k*OUx/(d*Math.sqrt(d))
+                ay += k*OUy/(d*Math.sqrt(d))
+
             }
 
         var OUx = honeyPot[ entities[i].target ].x - Ox
@@ -45,13 +48,13 @@ var loop = function(){
         ax += 0.05*OUx/Math.sqrt(d)
         ay += 0.05*OUy/Math.sqrt(d)
 
-        entities[i].vx = entities[i].vx * 0.5 +  ax * 1.9
-        entities[i].vy = entities[i].vy * 0.5 +  ay * 1.9
+        entities[i].vx = entities[i].vx * 0.9 +  ax * 1.2
+        entities[i].vy = entities[i].vy * 0.9 +  ay * 1.2
 
         entities[i].x += entities[i].vx * 4
         entities[i].y += entities[i].vy * 4
 
-        if ( d < 16 )
+        if ( d < 26 )
             entities[i].target = rand()%honeyPot.length
     }
 
@@ -59,8 +62,15 @@ var loop = function(){
     c.clearRect(0,0,500,500)
     for( var i=100;i--;){
         c.beginPath()
+        c.fillStyle= entities[i].color ? '#123534' : '#abc214'
+        c.strokeStyle= entities[i].color ? '#123534' : '#abc214'
         c.arc( entities[i].x, entities[i].y, 2, 0, 6.28 )
         c.fill()
+        c.beginPath()
+        c.moveTo(entities[i].x, entities[i].y)
+        c.lineTo(entities[i].x - entities[i].vx * 30, entities[i].y - entities[i].vy * 30)
+        c.stroke()
+
     }
 
     for( var i=honeyPot.length;i--;){

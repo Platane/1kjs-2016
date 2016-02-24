@@ -3,18 +3,20 @@
 var rand = function(){ return 0|( Math.random()*500 ) }
 
 // init entities
-const l=300
+const l=350
 entities = []
 for( var i=l;i--;)
-    entities[i]={x:rand(), y:rand(), target:rand()%4, vx:0, vy:0, color:rand()%2}
+    entities[i]={x:rand(), y:rand(), target:3, vx:0, vy:0, color:rand()%2}
 
 var honeyPot = [
     {x:100, y:100},
-    {x:rand(), y:rand()},
-    {x:rand(), y:rand()},
-    {x:rand(), y:rand()},
-    {x:rand(), y:rand()},
+    {x:140, y:100},
     {x:412, y:153},
+    {x:rand(), y:rand()},
+    {x:rand(), y:rand()},
+    {x:rand(), y:rand()},
+    {x:rand(), y:rand()},
+    {x:130, y:360},
 ]
 
 // loop
@@ -54,11 +56,11 @@ var loop = function(){
         entities[i].vx = entities[i].vx * 0.9 +  ax * 0.2
         entities[i].vy = entities[i].vy * 0.9 +  ay * 0.2
 
-        entities[i].x += entities[i].vx * 12
-        entities[i].y += entities[i].vy * 12
+        entities[i].x += entities[i].vx * 18
+        entities[i].y += entities[i].vy * 18
 
         if ( d < 26 )
-            entities[i].target = rand()%honeyPot.length
+            entities[i].target = entities[i].target > 1 ? entities[i].color : rand()%(honeyPot.length-2)+2
     }
 
     //draw
@@ -71,12 +73,13 @@ var loop = function(){
         c.fill()
         c.beginPath()
         c.moveTo(entities[i].x, entities[i].y)
-        c.lineTo(entities[i].x - entities[i].vx * 30, entities[i].y - entities[i].vy * 30)
+        c.lineTo(entities[i].x - entities[i].vx * 50, entities[i].y - entities[i].vy * 50)
         c.stroke()
 
     }
 
     for( var i=honeyPot.length;i--;){
+        c.strokeStyle= i>1 ? '#ab4135' : i ? '#123534' : '#abc214'
         c.beginPath()
         c.arc( honeyPot[i].x, honeyPot[i].y, 16, 0, 6.28 )
         c.stroke()

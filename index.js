@@ -3,15 +3,16 @@
 var rand = function(){ return 0|( Math.random()*500 ) }
 
 // init entities
-const l=200
+var l=200
+var n_team = 3
 entities = []
 for( var i=l;i--;)
-    entities[i]={x:rand(), y:rand(), target:3, vx:0, vy:0, color:rand()%2}
+    entities[i]={x:rand(), y:rand(), target:3, vx:0, vy:0, color:rand()%n_team}
 
 var honeyPot = [
     {x:100, y:100},
     {x:140, y:100},
-    {x:412, y:153},
+    {x:126, y:153},
     {x:rand(), y:rand()},
     {x:rand(), y:rand()},
     {x:rand(), y:rand()},
@@ -84,15 +85,16 @@ var loop = function(){
         entities[i].y += entities[i].vy * 18
 
         if ( d < 26 )
-            entities[i].target = entities[i].target > 1 ? entities[i].color : rand()%(honeyPot.length-2)+2
+            entities[i].target = entities[i].target >= n_team ? entities[i].color : rand()%(honeyPot.length-n_team)+n_team
     }
 
     //draw
     c.clearRect(0,0,500,500)
     for( var i=l;i--;){
+        var color = 'hsl(' + ( entities[i].color*75 + 12 ) + ', 50%, 60%)'
         c.beginPath()
-        c.fillStyle= entities[i].color ? '#123534' : '#abc214'
-        c.strokeStyle= entities[i].color ? '#123534' : '#abc214'
+        c.fillStyle= color
+        c.strokeStyle= color
         c.arc( entities[i].x, entities[i].y, 2, 0, 6.28 )
         c.fill()
         c.beginPath()
@@ -128,7 +130,7 @@ var loop = function(){
     })()
 
     for( var i=honeyPot.length;i--;){
-        c.strokeStyle= i>1 ? '#ab4135' : i ? '#123534' : '#abc214'
+        c.strokeStyle= i >= n_team ? '#7356b1' : 'hsl(' + ( i*75 + 12 ) + ', 50%, 60%)'
         c.beginPath()
         c.arc( honeyPot[i].x, honeyPot[i].y, 16, 0, 6.28 )
         c.stroke()

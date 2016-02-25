@@ -3,10 +3,10 @@
 var rand = function(){ return 0|( Math.random()*500 ) }
 
 // init entities
-const l=350
+const l=60
 entities = []
 for( var i=l;i--;)
-    entities[i]={x:rand(), y:rand(), target:3, vx:0, vy:0, color:rand()%2}
+    entities[i]={x:rand(), y:rand(), target:3, vx:0, vy:0, color:rand()%1}
 
 var honeyPot = [
     {x:100, y:100},
@@ -18,6 +18,13 @@ var honeyPot = [
     {x:rand(), y:rand()},
     {x:130, y:360},
 ]
+
+var x0 = 30
+var fatness = 16
+var friendlyness = 0.04
+var fn = function( x ) {
+    return  10 / ( x *x ) - friendlyness * Math.exp( -( x- x0 )*( x- x0 ) / ( fatness * fatness ) )
+}
 
 // loop
 var loop = function(){
@@ -36,12 +43,12 @@ var loop = function(){
                 var OUx = Ox - entities[j].x
                 var OUy = Oy - entities[j].y
 
-                var d = Math.max( 1, OUx*OUx + OUy*OUy )
+                var d = Math.max( 1, Math.sqrt( OUx*OUx + OUy*OUy ) )
 
-                var k = entities[j].color == entities[i].color ? 0.2 : 2
+                var k = entities[j].color == entities[i].color ? fn( d ) : 2 / ( d * d )
 
-                ax += k*OUx/(d*Math.sqrt(d))
-                ay += k*OUy/(d*Math.sqrt(d))
+                ax += k*OUx/d
+                ay += k*OUy/d
 
             }
 
@@ -77,6 +84,26 @@ var loop = function(){
         c.stroke()
 
     }
+
+    ;(function(){
+        var A = entities[ 123 % entities.length ]
+        var B = entities[ 17 % entities.length ]
+        var vx = B.x - A.x
+        var vy = B.y - A.y
+        var l = Math.sqrt( vx*vx + vy*vy )
+        vx/=l
+        vy/=l
+        for(var k=500;k--;){
+            var co = Math.min( 0.5, fn( k ) )
+
+            c.strokeStyle = 'hsl(' + ( (co/ 0.5)*360 ) + ', 80%, 60%)'
+            c.lineWidth = 1.6
+            c.beginPath()
+            c.moveTo( A.x + vx * k - vy* 10, A.y + vy * k + vx* 10 )
+            c.lineTo( A.x + vx * k + vy* 10, A.y + vy * k - vx* 10 )
+            c.stroke()
+        }
+    })()
 
     for( var i=honeyPot.length;i--;){
         c.strokeStyle= i>1 ? '#ab4135' : i ? '#123534' : '#abc214'

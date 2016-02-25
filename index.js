@@ -89,7 +89,34 @@ var loop = function(){
     }
 
     //draw
+
+
     c.clearRect(0,0,500,500)
+
+    // draw tethering
+    for( var i=l;i--;)
+    for( var j=i;j--;)
+        if(entities[i].color == entities[j].color && i % 2 == 0 && j % 3 == 0 ){
+
+            var OUx = entities[i].x - entities[j].x
+            var OUy = entities[i].y - entities[j].y
+
+            var d = Math.sqrt( OUx*OUx + OUy*OUy )
+
+            var x = 1 - Math.abs( d - 30 ) / 5
+
+            if ( x > 0 ) {
+                c.lineWidth = 0.5
+                c.strokeStyle = 'hsla(' + ( entities[i].color*75 + 12 ) + ', 50%, 60%, '+ x +' )'
+                c.beginPath()
+                c.moveTo( entities[i].x, entities[i].y )
+                c.lineTo( entities[j].x, entities[j].y )
+                c.stroke()
+            }
+
+        }
+
+    // draw entities
     for( var i=l;i--;){
         var color = 'hsl(' + ( entities[i].color*75 + 12 ) + ', 50%, 60%)'
         c.beginPath()
@@ -104,6 +131,7 @@ var loop = function(){
 
     }
 
+    // draw influence
     ;(function(){
         var A = entities[ 123 % entities.length ]
         var B = entities[ 17 % entities.length ]
@@ -121,7 +149,7 @@ var loop = function(){
             var co = Math.min( res, fn( k ) )
 
             c.strokeStyle = 'hsl(' + ( (co/ res)*360 ) + ', 80%, 60%)'
-            c.lineWidth = 1.6
+            c.lineWidth = 1
             c.beginPath()
             c.moveTo( A.x + vx * k - vy* 10, A.y + vy * k + vx* 10 )
             c.lineTo( A.x + vx * k + vy* 10, A.y + vy * k - vx* 10 )
@@ -129,12 +157,15 @@ var loop = function(){
         }
     })()
 
+    //draw honey pot
     for( var i=honeyPot.length;i--;){
         c.strokeStyle= i >= n_team ? '#7356b1' : 'hsl(' + ( i*75 + 12 ) + ', 50%, 60%)'
         c.beginPath()
         c.arc( honeyPot[i].x, honeyPot[i].y, 16, 0, 6.28 )
         c.stroke()
     }
+
+
 
     // loop
     requestAnimationFrame( loop )

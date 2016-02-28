@@ -3,7 +3,7 @@
 var rand = function(){ return 0|( Math.random()*500 ) }
 
 // init entities
-var l=200
+var l=250
 var n_team = 3
 entities = []
 for( var i=l;i--;)
@@ -28,6 +28,17 @@ var fn = function( x ) {
     return  revulsion / ( x *x ) - friendlyness * Math.exp( -( x- x0 )*( x- x0 ) / ( fatness * fatness ) )
 }
 
+
+var pointers=[]
+d.onmousemove = function(e){
+    pointers = [{x: e.pageX,y: e.pageY}]
+}
+window.addEventListener('touchmove', function(e){
+    pointers = []
+    for( var i=e.touches.length; i--; )
+        pointers.push({ x:e.touches[i].pageX, y:e.touches[i].pageY })
+})
+
 // loop
 var loop = function(){
 
@@ -40,6 +51,7 @@ var loop = function(){
         var Ox = entities[i].x
         var Oy = entities[i].y
 
+        // for each other entity
         var friendshipx = 0
         var friendshipy = 0
 
@@ -65,10 +77,15 @@ var loop = function(){
                 }
             }
 
+        // limit firendship influence
+        // prevent from forming a firendship ball
         var friendshipl = Math.sqrt( friendshipx * friendshipx + friendshipy * friendshipy )
 
         ax += friendshipx / friendshipl * Math.min( friendshipl, 0.08 )
         ay += friendshipy / friendshipl * Math.min( friendshipl, 0.08 )
+
+
+        // honey pot influence
 
         var OUx = honeyPot[ entities[i].target ].x - Ox
         var OUy = honeyPot[ entities[i].target ].y - Oy
@@ -77,6 +94,24 @@ var loop = function(){
 
         ax += 0.1*OUx/Math.sqrt(d)
         ay += 0.1*OUy/Math.sqrt(d)
+
+
+        // pointer influence
+        for( var j = pointers.length; j--;) {
+            var OUx = Ox - pointers[j].x
+            var OUy = Oy - pointers[j].y
+
+            var h = Math.sqrt( OUx*OUx + OUy*OUy )
+
+            var k = Math.min( 0.5, 20 / ( h * h ) )
+            ax += k*OUx/h
+            ay += k*OUy/h
+        }
+
+
+
+
+        // physic step
 
         entities[i].vx = entities[i].vx * 0.92 +  ax * 0.1
         entities[i].vy = entities[i].vy * 0.92 +  ay * 0.1
@@ -130,32 +165,6 @@ var loop = function(){
         c.stroke()
 
     }
-
-    // draw influence
-    ;(function(){
-        var A = entities[ 123 % entities.length ]
-        var B = entities[ 17 % entities.length ]
-        A = {x:0,y:5}
-        B = {x:500,y:5}
-        var vx = B.x - A.x
-        var vy = B.y - A.y
-        var l = Math.sqrt( vx*vx + vy*vy )
-        vx/=l
-        vy/=l
-        for(var k=500;k--;){
-
-            var res = 0.03
-
-            var co = Math.min( res, fn( k ) )
-
-            c.strokeStyle = 'hsl(' + ( (co/ res)*360 ) + ', 80%, 60%)'
-            c.lineWidth = 1
-            c.beginPath()
-            c.moveTo( A.x + vx * k - vy* 10, A.y + vy * k + vx* 10 )
-            c.lineTo( A.x + vx * k + vy* 10, A.y + vy * k - vx* 10 )
-            c.stroke()
-        }
-    })()
 
     //draw honey pot
     for( var i=honeyPot.length;i--;){

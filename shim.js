@@ -2,6 +2,7 @@
 
 var body=document.querySelector('body')
 body.setAttribute('style','margin:0;display:flex;align-items:center;justify-content:center;')
+body.setAttribute('style','margin:0;')
 
 var MAX_WIDTH  = 800
 var MAX_HEIGHT = 800

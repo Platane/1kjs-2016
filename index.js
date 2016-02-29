@@ -33,11 +33,24 @@ var pointers=[]
 d.onmousemove = function(e){
     pointers = [{x: e.pageX,y: e.pageY}]
 }
-window.addEventListener('touchmove', function(e){
+d.ontouchmove= function(e){
     pointers = []
     for( var i=e.touches.length; i--; )
         pointers.push({ x:e.touches[i].pageX, y:e.touches[i].pageY })
-})
+}
+d.onclick=function(e){
+    for(var i=honeyPot.length; i--;)
+    {
+        var OUx = honeyPot[ i ].x - e.pageX
+        var OUy = honeyPot[ i ].y - e.pageY
+
+        var d = Math.max( 0.1, OUx*OUx + OUy*OUy )
+
+        if ( d < 30 )
+            for( var k=entities.length; k--;)
+                entities[k].target = i
+    }
+}
 
 // loop
 var loop = function(){
@@ -103,7 +116,7 @@ var loop = function(){
 
             var h = Math.sqrt( OUx*OUx + OUy*OUy )
 
-            var k = Math.min( 0.5, 20 / ( h * h ) )
+            var k = Math.min( 0.5, 80 / ( h * h ) )
             ax += k*OUx/h
             ay += k*OUy/h
         }

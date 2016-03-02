@@ -2,7 +2,7 @@
 m=Math
 r = function(){ return 0|( m.random()*640 ) }
 
-l=280
+l=180
 e = []
 for(i=l;i--;)
     e[i]={x:r(), y:r(), t:i%9, u:0, v:0, c:r()%3}
@@ -134,7 +134,7 @@ u = function(){
     // draw tethering
     for( i=l;i--;)
     for( j=i;j--;)
-        if(e[i].c == e[j].c && i % 2 && j % 3 ){
+        if(e[i].c == e[j].c && i+j % 6 ){
 
             x = e[i].x - e[j].x
             y = e[i].y - e[j].y
@@ -155,15 +155,12 @@ u = function(){
         }
 
     // draw e
-    for( var i=l;i--;){
-        var color = 'hsl(' + ( e[i].c*75 + 12 ) + ', 50%, 60%)'
-        c.beginPath()
-        c.fillStyle= color
+    for( i=l;i--;){
+        color = 'hsl(' + ( e[i].c*75 + 12 ) + ', 50%, 60%)'
         c.strokeStyle= color
         c.lineWidth = 1.7
-        c.arc( e[i].x, e[i].y, 2.8, 0, 6.28 )
-        c.fill()
         c.beginPath()
+        c.arc( e[i].x, e[i].y, 2.8, 0, 6.28 )
         c.moveTo(e[i].x, e[i].y)
         c.lineTo(e[i].x - e[i].u * 60, e[i].y - e[i].v * 60)
         c.stroke()
@@ -171,7 +168,7 @@ u = function(){
     }
 
     //draw honey pot
-    for( var i=h.length;i--;){
+    for( i=h.length;i--;){
         c.strokeStyle= i >= 3 ? '#7356b1' : 'hsl(' + ( i*75 + 12 ) + ', 50%, 60%)'
         c.beginPath()
         c.arc( h[i].x, h[i].y, 22, 0, 6.28 )

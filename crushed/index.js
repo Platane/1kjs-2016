@@ -25,7 +25,7 @@ a.onmousemove = function(e){
 }
 
 // loop
-u = function(){
+function u (){
 
     c.clearRect(0,0,800,800)
 
@@ -34,11 +34,11 @@ u = function(){
         c.globalAlpha = c.lineWidth =1
         c.strokeStyle= i > 2 ? '#aaa' : 'hsl(' + ( i*75 + 12 ) + ',50%,60%)'
         c.beginPath()
-        c.arc( h[i].x, h[i].y, 22, 0, 6.3 )
+        c.arc( h[i].x, h[i].y, 22, 0, 7 )
         c.stroke()
         c.beginPath()
-        c.lineWidth = 4
-        c.arc( h[i].x, h[i].y, 24, 0, h[i].s/100 )
+        c.lineWidth = 2
+        c.arc( h[i].x, h[i].y, 23, 0, h[i].s/100 )
         c.stroke()
     }
 
@@ -54,12 +54,12 @@ u = function(){
 
 
         // draw
-        c.globalAlpha = c.lineWidth =1
+        c.globalAlpha = c.lineWidth = 1
         c.strokeStyle= 'hsl(' + ( o.c*75 + 12 ) + ',50%,60%)'
         c.beginPath()
-        c.arc( p, q, 2.8, 0, 6.3 )
+        c.arc( p, q, 2.5, 0, 7 )
         c.moveTo(p, q)
-        c.lineTo(p - o.u * 60, q - o.v * 60)
+        c.lineTo(p - o.u *3, q - o.v *3)
         c.stroke()
 
 
@@ -74,7 +74,7 @@ u = function(){
 
                 if ( e[j].c == o.c ) {
 
-                    k = b( 1, 2 / ( d *d ) - 0.01 * m.exp( -( d- 45 )*( d- 45 ) / ( 17 * 17 ) ) )
+                    k = b( 22, 44 / ( d *d ) - 0.22 * m.exp( ( 45-d )*( d- 45 ) / 289 ) )
                     v += k*x/d
                     w += k*y/d
 
@@ -90,7 +90,7 @@ u = function(){
 
                 } else {
 
-                    k = b( 2, 10 / ( d * d ) )
+                    k = b( 40, 220 / ( d * d ) )
                     s += k*x/d
                     t += k*y/d
                 }
@@ -100,7 +100,7 @@ u = function(){
         // limit firendship influence
         // prevent from forming a firendship ball
         j = z( v * v + w * w )
-        j = j / b( j, 0.02 )
+        j = j / b( j, 0.4 )
 
         s += v / j
         t += w / j
@@ -113,8 +113,8 @@ u = function(){
 
         d =z(m.max( 0.1, x*x + y*y ))
 
-        s += 0.1*x/d
-        t += 0.1*y/d
+        s += 2*x/d
+        t += 2*y/d
 
 
         // pointer influence
@@ -122,7 +122,7 @@ u = function(){
         y = q - g
 
         k = z( x*x + y*y )
-        k = b( 0.5, 80 / ( k*k ) ) / k
+        k = b( 9, 1760 / ( k*k ) ) / k
         s += k*x
         t += k*y
 
@@ -132,8 +132,8 @@ u = function(){
 
         // physic step
 
-        o.x += (o.u = o.u * 0.92 +  s * 0.1) * 22
-        o.y += (o.v = o.v * 0.92 +  t * 0.1) * 22
+        o.x += (o.u = o.u * 0.92 +  s * 0.1)
+        o.y += (o.v = o.v * 0.92 +  t * 0.1)
 
         if ( d < 18 ){
             h[ o.t ].s ++
